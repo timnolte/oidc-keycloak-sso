@@ -114,20 +114,23 @@ function oidc_keycloak_map_user_role( $user, $user_claim ) {
 
 	// Check the user claim for the `user-realm-role` key to lookup the WordPress role for mapping.
 	if ( ! empty( $settings ) && ! empty( $user_claim['user-realm-role'] ) ) {
-		// @var string $assigned_role
-		$assigned_role = $settings['default_user_role'];
+		// @var int $role_count
+		$role_count = 0;
 
 		foreach ( $user_claim['user-realm-role'] as $idp_role ) {
-			foreach ( $roles as $role ) {
-				if ( ! empty( $settings[ 'oidc_idp_' . strtolower( $role ) . '_roles' ] ) ) {
-					if ( in_array( $idp_role, explode( ';', $settings[ 'oidc_idp_' . strtolower( $role ) . '_roles' ] ) ) ) {
-						$assigned_role = strtolower( $role );
+			foreach ( $roles as $role_id => $role_name ) {
+				if ( ! empty( $settings[ 'oidc_idp_' . strtolower( $role_name ) . '_roles' ] ) ) {
+					if ( in_array( $idp_role, explode( ';', $settings[ 'oidc_idp_' . strtolower( $role_name ) . '_roles' ] ) ) ) {
+						$user->add_role( $role_id );
+						$role_count++;
 					}
 				}
 			}
 		}
 
-		$user->set_role( $assigned_role );
+		if ( intval( $role_count ) == 0 ) {
+			$user->set_role( $settings['default_user_role'] );
+		}
 	}
 
 }
