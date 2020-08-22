@@ -79,10 +79,10 @@ function oidc_keycloak_role_mapping_setting( $fields ) {
 	$roles = $wp_roles_obj->get_names();
 
 	foreach ( $roles as $role ) {
-		$fields[ 'oidc_idp_' . strtolower( $role ) . '_role' ] = array(
-			'title'       => sprintf( __( '%s WordPress Role', 'oidc-keycloak-mu-plugin' ), $role ),
+		$fields[ 'oidc_idp_' . strtolower( $role ) . '_roles' ] = array(
+			'title'       => sprintf( __( 'IDP Role for WordPress %ss', 'oidc-keycloak-mu-plugin' ), $role ),
 			'description' => sprintf(
-				__( 'Semi-colon(;) separated list of IDP groups to map to the %s WordPress role', 'oidc-keycloak-mu-plugin' ),
+				__( 'Semi-colon(;) separated list of IDP roles to map to the %s WordPress role', 'oidc-keycloak-mu-plugin' ),
 				$role
 			),
 			'type'        => 'text',
@@ -100,6 +100,8 @@ add_filter( 'openid-connect-generic-settings-fields', 'oidc_keycloak_role_mappin
  *
  * @param WP_User      $user       The authenticated user's WP_User object.
  * @param array<mixed> $user_claim The IDP provided Identity Token user claim array.
+ *
+ * @return void
  */
 function oidc_keycloak_map_user_role( $user, $user_claim ) {
 
@@ -112,14 +114,14 @@ function oidc_keycloak_map_user_role( $user, $user_claim ) {
 
 	// Check the user claim for the `user-realm-role` key to lookup the WordPress role for mapping.
 	if ( ! empty( $settings ) && ! empty( $user_claim['user-realm-role'] ) ) {
-		// @var string $mapped_role
+		// @var string $assigned_role
 		$assigned_role = $settings['default_user_role'];
 
 		foreach ( $user_claim['user-realm-role'] as $idp_role ) {
 			foreach ( $roles as $role ) {
-				if ( ! empty( $settings[ 'oidc_idp_' . strtolower( $role ) . '_role' ] ) ) {
-					if ( in_array( $idp_role, explode( ';', $settings[ 'oidc_idp_' . strtolower( $role ) . '_role' ] ) ) ) {
-						$assigned_role = $role;
+				if ( ! empty( $settings[ 'oidc_idp_' . strtolower( $role ) . '_roles' ] ) ) {
+					if ( in_array( $idp_role, explode( ';', $settings[ 'oidc_idp_' . strtolower( $role ) . '_roles' ] ) ) ) {
+						$assigned_role = strtolower( $role );
 					}
 				}
 			}
