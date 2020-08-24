@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+	<title>OpenID Connect Keycloak SSO Integration</title>
+	<parser>
+		<target>docs</target>
+	</parser>
+	<transformer>
+		<target>docs</target>
+	</transformer>
+	<transformations>
+		<template name="vendor/fr3nch13/phpdoc-markdown/data/templates/markdown" />
+	</transformations>
+	<files>
+		<file>oidc-keycloak-custom.php</file>
+	</files>
+</phpdoc>

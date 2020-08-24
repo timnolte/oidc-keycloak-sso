@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project title="OpenID Connect Keycloak SSO Integration" version="2.9.1">
+  <partials/>
+  <file path="oidc-keycloak-custom.php" generated-path="oidc-keycloak-custom.html" hash="46fa33438f54f144a969d1dac9402279" package="OpenidConnectGeneric_MuPlugin">
+    <docblock line="0">
+      <description>Plugin Name: OpenID Connect Client Customizations
+Description: Provides customizations for the OpenID Connect Client plugin.</description>
+      <long-description></long-description>
+      <tag name="package" line="0" description="OpenidConnectGeneric_MuPlugin"/>
+      <tag name="link" line="0" description="https://github.com/daggerhart/openid-connect-generic" link="https://github.com/daggerhart/openid-connect-generic"/>
+    </docblock>
+    <function namespace="" line="25" package="OpenidConnectGeneric_MuPlugin">
+      <name>oidc_keycloak_login_button_text</name>
+      <full_name>\oidc_keycloak_login_button_text()</full_name>
+      <docblock line="25">
+        <description>Modifies the OIDC login button text.</description>
+        <long-description></long-description>
+        <tag name="package" line="25" description="OpenidConnectGeneric_MuPlugin"/>
+        <tag name="link" line="25" description="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-login-button-text" link="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-login-button-text"/>
+        <tag name="param" line="25" description="&lt;p&gt;The button text.&lt;/p&gt;" type="string" variable="$text">
+          <type>string</type>
+        </tag>
+        <tag name="return" line="25" description="" type="string">
+          <type>string</type>
+        </tag>
+      </docblock>
+      <argument line="0" by_reference="false">
+        <name>$text</name>
+        <default></default>
+        <type>string</type>
+      </argument>
+    </function>
+    <function namespace="" line="47" package="OpenidConnectGeneric_MuPlugin">
+      <name>oidc_keycloak_add_login_button_text_setting</name>
+      <full_name>\oidc_keycloak_add_login_button_text_setting()</full_name>
+      <docblock line="47">
+        <description>Adds a new setting that allows an Administrator to set the button text from
+the plugin settings screen.</description>
+        <long-description></long-description>
+        <tag name="package" line="47" description="OpenidConnectGeneric_MuPlugin"/>
+        <tag name="link" line="47" description="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-settings-fields" link="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-settings-fields"/>
+        <tag name="param" line="47" description="&lt;p&gt;The array of settings fields.&lt;/p&gt;" type="\array&lt;mixed&gt;" variable="$fields">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+        <tag name="return" line="47" description="" type="\array&lt;mixed&gt;">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+      </docblock>
+      <argument line="0" by_reference="false">
+        <name>$fields</name>
+        <default></default>
+        <type>\array&lt;mixed&gt;</type>
+      </argument>
+    </function>
+    <function namespace="" line="74" package="OpenidConnectGeneric_MuPlugin">
+      <name>oidc_keycloak_add_require_idp_role_setting</name>
+      <full_name>\oidc_keycloak_add_require_idp_role_setting()</full_name>
+      <docblock line="74">
+        <description>Setting to indicate whether an IDP role mapping is required for user creation.</description>
+        <long-description></long-description>
+        <tag name="package" line="74" description="OpenidConnectGeneric_MuPlugin"/>
+        <tag name="link" line="74" description="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-settings-fields" link="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-settings-fields"/>
+        <tag name="param" line="74" description="&lt;p&gt;The array of settings fields.&lt;/p&gt;" type="\array&lt;mixed&gt;" variable="$fields">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+        <tag name="return" line="74" description="" type="\array&lt;mixed&gt;">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+      </docblock>
+      <argument line="0" by_reference="false">
+        <name>$fields</name>
+        <default></default>
+        <type>\array&lt;mixed&gt;</type>
+      </argument>
+    </function>
+    <function namespace="" line="98" package="OpenidConnectGeneric_MuPlugin">
+      <name>oidc_keycloak_add_default_role_setting</name>
+      <full_name>\oidc_keycloak_add_default_role_setting()</full_name>
+      <docblock line="98">
+        <description>Adds a new setting that allows configuration of the default role assigned
+to users when no IDP role is provided.</description>
+        <long-description></long-description>
+        <tag name="package" line="98" description="OpenidConnectGeneric_MuPlugin"/>
+        <tag name="link" line="98" description="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-settings-fields" link="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-settings-fields"/>
+        <tag name="param" line="98" description="&lt;p&gt;The array of settings fields.&lt;/p&gt;" type="\array&lt;mixed&gt;" variable="$fields">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+        <tag name="return" line="98" description="" type="\array&lt;mixed&gt;">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+      </docblock>
+      <argument line="0" by_reference="false">
+        <name>$fields</name>
+        <default></default>
+        <type>\array&lt;mixed&gt;</type>
+      </argument>
+    </function>
+    <function namespace="" line="130" package="OpenidConnectGeneric_MuPlugin">
+      <name>oidc_keycloak_role_mapping_setting</name>
+      <full_name>\oidc_keycloak_role_mapping_setting()</full_name>
+      <docblock line="130">
+        <description>Adds new settings that allows mapping IDP roles to WordPress roles.</description>
+        <long-description></long-description>
+        <tag name="package" line="130" description="OpenidConnectGeneric_MuPlugin"/>
+        <tag name="link" line="130" description="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-settings-fields" link="https://github.com/daggerhart/openid-connect-generic#openid-connect-generic-settings-fields"/>
+        <tag name="param" line="130" description="&lt;p&gt;The array of settings fields.&lt;/p&gt;" type="\array&lt;mixed&gt;" variable="$fields">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+        <tag name="return" line="130" description="" type="\array&lt;mixed&gt;">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+      </docblock>
+      <argument line="0" by_reference="false">
+        <name>$fields</name>
+        <default></default>
+        <type>\array&lt;mixed&gt;</type>
+      </argument>
+    </function>
+    <function namespace="" line="162" package="OpenidConnectGeneric_MuPlugin">
+      <name>oidc_keycloak_user_creation_test</name>
+      <full_name>\oidc_keycloak_user_creation_test()</full_name>
+      <docblock line="162">
+        <description>Determine whether user should be created using plugin settings &amp; IDP identity.</description>
+        <long-description></long-description>
+        <tag name="package" line="162" description="OpenidConnectGeneric_MuPlugin"/>
+        <tag name="param" line="162" description="&lt;p&gt;The plugin user creation test flag.&lt;/p&gt;" type="boolean" variable="$result">
+          <type>boolean</type>
+        </tag>
+        <tag name="param" line="162" description="&lt;p&gt;The authenticated user's IDP Identity Token user claim.&lt;/p&gt;" type="\array&lt;mixed&gt;" variable="$user_claim">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+        <tag name="return" line="162" description="" type="boolean">
+          <type>boolean</type>
+        </tag>
+      </docblock>
+      <argument line="0" by_reference="false">
+        <name>$result</name>
+        <default></default>
+        <type>boolean</type>
+      </argument>
+      <argument line="0" by_reference="false">
+        <name>$user_claim</name>
+        <default></default>
+        <type>\array&lt;mixed&gt;</type>
+      </argument>
+    </function>
+    <function namespace="" line="203" package="OpenidConnectGeneric_MuPlugin">
+      <name>oidc_keycloak_map_user_role</name>
+      <full_name>\oidc_keycloak_map_user_role()</full_name>
+      <docblock line="203">
+        <description>Set user role on based on IDP role after authentication.</description>
+        <long-description></long-description>
+        <tag name="package" line="203" description="OpenidConnectGeneric_MuPlugin"/>
+        <tag name="param" line="203" description="&lt;p&gt;The authenticated user's WP_User object.&lt;/p&gt;" type="\WP_User" variable="$user">
+          <type>\WP_User</type>
+        </tag>
+        <tag name="param" line="203" description="&lt;p&gt;The IDP provided Identity Token user claim array.&lt;/p&gt;" type="\array&lt;mixed&gt;" variable="$user_claim">
+          <type>\array&lt;mixed&gt;</type>
+        </tag>
+        <tag name="return" line="203" description="" type="void">
+          <type>void</type>
+        </tag>
+      </docblock>
+      <argument line="0" by_reference="false">
+        <name>$user</name>
+        <default></default>
+        <type>\WP_User</type>
+      </argument>
+      <argument line="0" by_reference="false">
+        <name>$user_claim</name>
+        <default></default>
+        <type>\array&lt;mixed&gt;</type>
+      </argument>
+    </function>
+  </file>
+  <package name="OpenidConnectGeneric_MuPlugin" full_name="OpenidConnectGeneric_MuPlugin"/>
+  <package name="global" full_name="global"/>
+  <namespace name="global" full_name="global"/>
+  <deprecated count="0"/>
+</project>

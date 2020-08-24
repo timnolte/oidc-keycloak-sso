@@ -10,9 +10,11 @@
         }
     ],
     "require": {
-        "composer/installers": "^1.9"
+        "composer/installers": "~1.0"
     },
     "require-dev": {
-        "evert/phpdoc-md": "^0.2.0"
+        "twig/twig": "~1.9",
+        "phpdocumentor/phpdocumentor": "^2.0",
+        "fr3nch13/phpdoc-markdown": "^1.0"
     }
 }
