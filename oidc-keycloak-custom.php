@@ -134,13 +134,16 @@ function oidc_keycloak_role_mapping_setting( $fields ) {
 	// @var array<string> $roles
 	$roles = $wp_roles_obj->get_names();
 
+	// Mapping setting for each role
 	foreach ( $roles as $role ) {
-		$fields[ 'oidc_idp_' . strtolower( $role ) . '_roles' ] = array(
+		$roleName = strtolower($role);
+		$fields[ 'oidc_idp_' . $roleName . '_roles' ] = array(
 			'title'       => sprintf( __( 'IDP Role for WordPress %ss', 'oidc-keycloak-mu-plugin' ), $role ),
 			'description' => sprintf(
-				__( 'Semi-colon(;) separated list of IDP roles to map to the %s WordPress role', 'oidc-keycloak-mu-plugin' ),
+				__( 'Semi-colon(;) separated list of IDP roles to map to the %s WordPress role. By default, will search the IDP role in claim \'user-realm-role\'', 'oidc-keycloak-mu-plugin' ),
 				$role
 			),
+			'example'     => "'wp-$roleName' if user token has 'wp-$roleName' in the default claim. 'resource_access.\$client_id.roles.$roleName' if you created a role '$roleName' for the associated client in Keycloak.",
 			'type'        => 'text',
 			'section'     => 'user_settings',
 		);
@@ -208,25 +211,117 @@ function oidc_keycloak_map_user_role( $user, $user_claim ) {
 	$roles = $wp_roles_obj->get_names();
 	// @var array<mixed> $settings
 	$settings = get_option( 'openid_connect_generic_settings', array() );
+	// @var array<string> $idp_roles
+	$idp_roles = [];
 
-	// Check the user claim for the `user-realm-role` key to lookup the WordPress role for mapping.
-	if ( ! empty( $settings ) && ! empty( $user_claim['user-realm-role'] ) ) {
+	if ( ! empty( $settings ) )
+	{
 		// @var int $role_count
 		$role_count = 0;
 
-		foreach ( $user_claim['user-realm-role'] as $idp_role ) {
-			foreach ( $roles as $role_id => $role_name ) {
-				if ( ! empty( $settings[ 'oidc_idp_' . strtolower( $role_name ) . '_roles' ] ) ) {
-					if ( in_array( $idp_role, explode( ';', $settings[ 'oidc_idp_' . strtolower( $role_name ) . '_roles' ] ) ) ) {
-						$user->add_role( $role_id );
-						$role_count++;
+		// Loop on roles existing in Wordpress
+		foreach ( $roles as $role_id => $role_name )
+		{
+			// Separated multiples values given
+			$settingsRoles = explode( ';', $settings[ 'oidc_idp_' . strtolower( $role_name ) . '_roles' ] );
+
+			// Loop on roles provided in settings
+			foreach ( $settingsRoles as $settingRole )
+			{
+				error_log("[INFO] Evaluating setting '$settingRole' for role $role_name !");
+
+				// Nested value
+				if( str_contains($settingRole, '.') )
+				{
+					if( str_contains($settingRole, "\$client_id") )
+					{
+						// Support getting client_id dynamically
+						//
+						// e.g. if 'client_id' is 'wp-test' and
+						// 		setting is 'resource_access.$client_id.roles.editor'
+						// 		treat it as 'resource_access.wp-test.roles.editor'
+						//
+						$settingRole = str_replace("\$client_id", $settings['client_id'], $settingRole);
+					}
+
+					// Multi-level claim
+					// > Each part of the string is a level
+					// > Last part of the string is the value
+					//
+					// e.g: 'realm_access.roles.admin' will search for 'admin'
+					//		in 'user_claim: { realm_access: { roles: [ -> here <- ] } }'
+					//
+					$claim_levels = explode('.', $settingRole);
+					$claim_levels_count = count($claim_levels) - 1;
+
+					// Initialize varibles (= top-level of the token)
+					$claim_index = 0;
+					$claim_source = $user_claim;
+
+					do
+					{
+						$claim_name = $claim_levels[$claim_index];
+
+						// Search for the claim at that sublevel of the token
+						if( array_key_exists($claim_name, $claim_source) )
+						{
+							// Update variables for next loop (= next sub-level of the token)
+							$claim_source = $claim_source[$claim_name];
+							$claim_index++;
+						}
+						else
+						{
+							// Log error, empty variables and exit loop
+							error_log("[WARN] Unable to find claim '$claim_name' inside \$user_claim !");
+							$claim_source = [];
+							break;
+						}
+					}
+					while ($claim_index < $claim_levels_count);
+
+					// Get values from the nested and/or custom claim
+					$idp_roles = $claim_source;
+					$idp_claim = $claim_levels[$claim_index];
+				}
+				else
+				{
+					$claim_name = 'user-realm-role'; // default plugin value
+					$claim_source = $user_claim;
+
+					if( array_key_exists($claim_name, $claim_source) )
+					{
+						// Get values from the default claim
+						$idp_roles = $claim_source[$claim_name];
+						$idp_claim = $settingRole;
+					}
+					else
+					{
+						// Log error, empty variables and exit loop
+						error_log("[WARN] Unable to find claim '$claim_name' inside \$user_claim !");
 					}
 				}
+
+				// Search for the value (from setting) inside the claim roles
+				if ( ! empty( $idp_roles ) && in_array( $idp_claim, $idp_roles ) )
+				{
+					error_log("[INFO] Found value '$idp_claim' in claim '$claim_name' inside \$user_claim !");
+					error_log("[INFO] Adding role $role_name to that user !");
+
+					$user->add_role( $role_id );
+					$role_count++;
+				}
 			}
+
+			error_log("---"); // separate line
 		}
 
-		if ( intval( $role_count ) == 0 && ! empty( $settings['default_user_role'] ) ) {
-			if ( boolval( $settings['default_user_role'] ) ) {
+		// Add default role if no other role was found/added
+		if ( intval( $role_count ) == 0 && ! empty( $settings['default_user_role'] ) )
+		{
+			if ( boolval( $settings['default_user_role'] ) )
+			{
+				error_log("[INFO] Adding default role " . $settings['default_user_role'] . " to that user !");
+
 				$user->set_role( $settings['default_user_role'] );
 			}
 		}
